@@ -10,7 +10,7 @@ from common.registry import registry
 import traceback
 from beartype import beartype
 from beartype.door import is_bearable
-from playwright._impl._api_types import Error, TimeoutError
+from playwright._impl._errors import Error, TimeoutError
 from agents import load_agent
 from agents.vanilla_agent import VanillaAgent
 from llm import load_llm
