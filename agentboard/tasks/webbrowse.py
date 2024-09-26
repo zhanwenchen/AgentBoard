@@ -6,25 +6,25 @@ import logging
 import requests
 from pathlib import Path
 from typing import List, Dict, Any, Tuple, Union
-from common.registry import registry
+from AgentBoard.agentboard.common.registry import registry
 import traceback
 from beartype import beartype
 from beartype.door import is_bearable
 from playwright._impl._api_types import Error, TimeoutError
-from agents import load_agent
-from agents.vanilla_agent import VanillaAgent
-from llm import load_llm
-from environment.browser_env.actions import Action, create_id_based_action, create_playwright_action, \
+from AgentBoard.agentboard.agents import load_agent
+from AgentBoard.agentboard.agents.vanilla_agent import VanillaAgent
+from AgentBoard.agentboard.llm import load_llm
+from AgentBoard.agentboard.environment.browser_env.actions import Action, create_id_based_action, create_playwright_action, \
     ActionParsingError, create_none_action, ActionTypes, create_stop_action
-from environment.browser_env.utils import StateInfo
-from environment.browser_env.help_function import RenderHelper, map_url_to_real, extract_action, \
+from AgentBoard.agentboard.environment.browser_env.utils import StateInfo
+from AgentBoard.agentboard.environment.browser_env.help_function import RenderHelper, map_url_to_real, extract_action, \
     log_progress_score, transform_format, get_action_description, early_stop
-from environment.browser_env.evaluation_function import (
+from AgentBoard.agentboard.environment.browser_env.evaluation_function import (
     evaluator_router,
     progress_evaluator_router,
 )
-from environment import load_environment
-from utils.logging.logger import TaskLogger
+from AgentBoard.agentboard.environment import load_environment
+from AgentBoard.agentboard.utils.logging.logger import TaskLogger
 
 from .base_task import BaseTask
 

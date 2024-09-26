@@ -2,7 +2,7 @@ from .openai_gpt import OPENAI_GPT
 from .azure_gpt import OPENAI_GPT_AZURE
 from .claude import CLAUDE
 from .vllm import VLLM
-from common.registry import registry
+from AgentBoard.agentboard.common.registry import registry
 from .huggingface import HgModels
 
 __all__ = [

@@ -1,7 +1,7 @@
 import pdb
 
 import jsonlines
-from common.registry import registry
+from AgentBoard.agentboard.common.registry import registry
 from scienceworld import ScienceWorldEnv
 import re
 import random

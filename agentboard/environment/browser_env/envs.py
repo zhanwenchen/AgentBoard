@@ -24,7 +24,7 @@ from playwright.sync_api import (
     sync_playwright,
 )
 
-from utils.logging.agent_logger import AgentLogger, ColoredFormatter
+from AgentBoard.agentboard.utils.logging.agent_logger import AgentLogger, ColoredFormatter
 from .actions import Action, execute_action, get_action_space
 from .processors import ObservationHandler, ObservationMetadata
 from .utils import (

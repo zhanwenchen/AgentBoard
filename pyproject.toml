@@ -1,0 +1,6 @@
+[tool.setuptools]
+py-modules = []
+
+[project]
+name = "agentboard"
+version = "2024.0.0"

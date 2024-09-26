@@ -5,8 +5,8 @@ import os
 import re
 import numpy as np
 from minigrid.wrappers import RGBImgObsWrapper
-from environment.base_env import BaseEnvironment
-from common.registry import registry
+from AgentBoard.agentboard.environment.base_env import BaseEnvironment
+from AgentBoard.agentboard.common.registry import registry
 import matplotlib.pyplot as plt
 
 

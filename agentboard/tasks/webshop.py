@@ -10,15 +10,15 @@ import logging
 from pathlib import Path
 from bs4 import BeautifulSoup
 from bs4.element import Comment
-from llm import load_llm
+from AgentBoard.agentboard.llm import load_llm
 from dotenv import load_dotenv
-from agents import load_agent
-from environment import load_environment
-from utils.common_exception import PageNumberError
+from AgentBoard.agentboard.agents import load_agent
+from AgentBoard.agentboard.environment import load_environment
+from AgentBoard.agentboard.utils.common_exception import PageNumberError
 
-from agents.vanilla_agent import VanillaAgent
-from common.registry import registry
-from utils.logging.logger import TaskLogger
+from AgentBoard.agentboard.agents.vanilla_agent import VanillaAgent
+from AgentBoard.agentboard.common.registry import registry
+from AgentBoard.agentboard.utils.logging.logger import TaskLogger
 
 from .base_task import BaseTask
 

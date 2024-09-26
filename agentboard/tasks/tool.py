@@ -5,17 +5,17 @@ import json
 from copy import deepcopy
 from typing import Any, Dict, List, Union
 
-from llm import load_llm
-from agents import load_agent
-from environment import load_environment
-from utils.tool.data_utils import ToolDataset
-from tasks.base_task import BaseTask
-from common.registry import registry
+from AgentBoard.agentboard.llm import load_llm
+from AgentBoard.agentboard.agents import load_agent
+from AgentBoard.agentboard.environment import load_environment
+from AgentBoard.agentboard.utils.tool.data_utils import ToolDataset
+from AgentBoard.agentboard.tasks import BaseTask
+from AgentBoard.agentboard.common.registry import registry
 
-from utils.logging.logger import TaskLogger
-from utils.logging.agent_logger import AgentLogger
+from AgentBoard.agentboard.utils.logging.logger import TaskLogger
+from AgentBoard.agentboard.utils.logging.agent_logger import AgentLogger
 
-from utils.tool.helpers import (
+from AgentBoard.agentboard.utils.tool.helpers import (
     extract_action_name_and_action_input,
     extract_sheet_number,
     check_credentials,

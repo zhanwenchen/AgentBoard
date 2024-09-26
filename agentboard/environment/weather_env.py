@@ -3,9 +3,9 @@ import os
 import re
 import json
 import logging
-from common.registry import registry
-from utils.weather.weather_tools import weather_toolkits
-from utils.tool.helpers import parse_action, is_same_location
+from AgentBoard.agentboard.common.registry import registry
+from AgentBoard.agentboard.utils.weather.weather_tools import weather_toolkits
+from AgentBoard.agentboard.utils.tool.helpers import parse_action, is_same_location
 
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",

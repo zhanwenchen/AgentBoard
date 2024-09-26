@@ -1,6 +1,6 @@
 from .vanilla_agent import VanillaAgent
 from .react_agent import ReactAgent
-from common.registry import registry
+from AgentBoard.agentboard.common.registry import registry
 
 __all__ = ["VanillaAgent", "ReactAgent"]
 

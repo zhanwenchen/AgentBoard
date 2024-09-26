@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from typing import List
-from llm import load_llm
+from AgentBoard.agentboard.llm import load_llm
 import yaml
-from agents import load_agent
+from AgentBoard.agentboard.agents import load_agent
 from prompts.temp.tidybot_gpt import construct_placement_prompt, construct_summarization_prompt_template
-from common.registry import registry
+from AgentBoard.agentboard.common.registry import registry
 
 @dataclass
 class Scenario:

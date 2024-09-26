@@ -4,7 +4,7 @@ import tiktoken
 import time
 import timeout_decorator
 import numpy as np
-from common.registry import registry
+from AgentBoard.agentboard.common.registry import registry
 
 from tenacity import (
     retry,

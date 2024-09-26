@@ -1,7 +1,7 @@
 import openai
 import os
 import time
-from common.registry import registry
+from AgentBoard.agentboard.common.registry import registry
 import pdb
 import tiktoken
 

@@ -6,13 +6,13 @@ import requests
 import logging
 from bs4 import BeautifulSoup
 from bs4.element import Comment
-from common.registry import registry
+from AgentBoard.agentboard.common.registry import registry
 from pathlib import Path
 from difflib import get_close_matches
 from urllib.parse import quote_plus
 
-from utils.common_exception import PageNumberError
-from utils.logging.agent_logger import AgentLogger, ColoredFormatter
+from AgentBoard.agentboard.utils.common_exception import PageNumberError
+from AgentBoard.agentboard.utils.logging.agent_logger import AgentLogger, ColoredFormatter
 
 
 def clean_str(p):

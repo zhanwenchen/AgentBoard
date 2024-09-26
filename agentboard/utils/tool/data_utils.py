@@ -1,6 +1,6 @@
 import json
 import os
-from agents.vanilla_agent import VanillaAgent
+from AgentBoard.agentboard.agents.vanilla_agent import VanillaAgent
 
 class ToolDataset:
     def __init__(self, test_file) -> None:

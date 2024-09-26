@@ -3,9 +3,9 @@ import os
 import re
 import json
 import logging
-from common.registry import registry
-from utils.academia.academia_tools import academia_toolkits
-from utils.tool.helpers import parse_action
+from AgentBoard.agentboard.common.registry import registry
+from AgentBoard.agentboard.utils.academia.academia_tools import academia_toolkits
+from AgentBoard.agentboard.utils.tool.helpers import parse_action
 
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",

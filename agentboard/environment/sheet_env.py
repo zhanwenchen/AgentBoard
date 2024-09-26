@@ -4,9 +4,9 @@ import os
 import re
 import json
 import logging
-from common.registry import registry
-from utils.sheet.sheets_tools import sheet_toolkits
-from utils.tool.helpers import parse_action
+from AgentBoard.agentboard.common.registry import registry
+from AgentBoard.agentboard.utils.sheet.sheets_tools import sheet_toolkits
+from AgentBoard.agentboard.utils.tool.helpers import parse_action
 
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",

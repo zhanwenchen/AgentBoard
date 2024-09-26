@@ -1,10 +1,10 @@
 import os
 import numpy as np
 
-from llm import load_llm
-from agents import load_agent
-from environment import load_environment
-from common.registry import registry
+from AgentBoard.agentboard.llm import load_llm
+from AgentBoard.agentboard.agents import load_agent
+from AgentBoard.agentboard.environment import load_environment
+from AgentBoard.agentboard.common.registry import registry
 
 
 

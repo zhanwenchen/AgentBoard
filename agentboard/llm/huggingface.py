@@ -1,12 +1,12 @@
 from transformers import AutoTokenizer, AutoModel, pipeline, StoppingCriteria, AutoModelForCausalLM
-from common.registry import registry
+from AgentBoard.agentboard.common.registry import registry
 import transformers
 import torch
 import os
 import deepspeed
 import pdb
 import numpy as np
-from prompts.prompt_template import prompt_templates
+from AgentBoard.agentboard.prompts.prompt_template import prompt_templates
 
 class EosListStoppingCriteria(StoppingCriteria):
     def __init__(self, eos_sequence):

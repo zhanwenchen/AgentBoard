@@ -1,4 +1,4 @@
-from common.registry import registry
+from AgentBoard.agentboard.common.registry import registry
 import alfworld
 import alfworld.agents.environment
 import pdb

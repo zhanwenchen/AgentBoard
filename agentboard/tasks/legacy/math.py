@@ -1,17 +1,17 @@
 import os
 import numpy as np
 
-from utils.math.expression_utils import extract_action
+from AgentBoard.agentboard.utils.math.expression_utils import extract_action
 import re
-from llm import load_llm
-from agents import load_agent
-from environment import load_environment
+from AgentBoard.agentboard.llm import load_llm
+from AgentBoard.agentboard.agents import load_agent
+from AgentBoard.agentboard.environment import load_environment
 import json
 import logging
 from torch.utils.data import Dataset
-from utils.math.data_utils import GSM8k_XL_Dataset, FUNCQA_OH_Dataset, FUNCQA_MH_Dataset
-from utils.math.math_utils import check_equal
-from tasks.base_task import BaseTask
+from AgentBoard.agentboard.utils.math.data_utils import GSM8k_XL_Dataset, FUNCQA_OH_Dataset, FUNCQA_MH_Dataset
+from AgentBoard.agentboard.utils.math.math_utils import check_equal
+from AgentBoard.agentboard.tasks import BaseTask
 
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",

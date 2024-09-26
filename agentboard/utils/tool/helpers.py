@@ -1,7 +1,7 @@
 import re
 import math
 import os
-from utils.logging.agent_logger import AgentLogger
+from AgentBoard.agentboard.utils.logging.agent_logger import AgentLogger
 
 def extract_action_name_and_action_input(text):
     pattern = r"\s*(.*?)\s*with\s*Action Input:\s*(.*?)$"

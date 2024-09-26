@@ -23,11 +23,11 @@ class Registry:
 
         Usage:
 
-            from common.registry import registry
+            from AgentBoard.agentboard.common.registry import registry
         """
 
         def wrap(env_cls):
-           # from environment.base_env import BaseEnvironment
+           # from AgentBoard.agentboard.environment.base_env import BaseEnvironment
 
            # assert issubclass(
            #     env_cls, BaseEnvironment
@@ -52,11 +52,11 @@ class Registry:
 
         Usage:
 
-            from common.registry import registry
+            from AgentBoard.agentboard.common.registry import registry
         """
 
         def wrap(agent_cls):
-            from agents.base_agent import BaseAgent
+            from AgentBoard.agentboard.agents.base_agent import BaseAgent
 
             assert issubclass(
                 agent_cls, BaseAgent

@@ -3,8 +3,8 @@ import textworld.gym
 import subprocess
 import os
 import re
-from environment.base_env import BaseEnvironment
-from common.registry import registry
+from AgentBoard.agentboard.environment.base_env import BaseEnvironment
+from AgentBoard.agentboard.common.registry import registry
 
 @registry.register_environment("textworld")
 class TextWorld(BaseEnvironment):

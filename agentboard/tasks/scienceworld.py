@@ -6,12 +6,12 @@ import time
 from llm import load_llm
 from agents import load_agent
 import random
-from environment import load_environment
+from AgentBoard.agentboard.environment import load_environment
 import jsonlines
-from common.registry import registry
+from AgentBoard.agentboard.common.registry import registry
 
-from utils.logging.logger import TaskLogger
-from utils.logging.agent_logger import AgentLogger
+from AgentBoard.agentboard.utils.logging.logger import TaskLogger
+from AgentBoard.agentboard.utils.logging.agent_logger import AgentLogger
 logger = AgentLogger(__name__)
 
 from .base_task import BaseTask

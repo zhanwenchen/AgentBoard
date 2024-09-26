@@ -1,8 +1,8 @@
 import os
 import nltk
 import sys
-from environment.base_env import BaseEnvironment
-from common.registry import registry
+from AgentBoard.agentboard.environment.base_env import BaseEnvironment
+from AgentBoard.agentboard.common.registry import registry
 
 sys.path.append(os.path.join(os.getcwd(), 'agentboard', 'environment', 'pddl_env')) 
 sys.path.append(os.path.join(os.getcwd(), 'environment', 'pddl_env')) 

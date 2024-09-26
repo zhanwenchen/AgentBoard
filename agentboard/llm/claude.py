@@ -1,7 +1,7 @@
 from anthropic import Anthropic, HUMAN_PROMPT, AI_PROMPT
 import os
 import time
-from common.registry import registry
+from AgentBoard.agentboard.common.registry import registry
 import pdb
 import tiktoken
 

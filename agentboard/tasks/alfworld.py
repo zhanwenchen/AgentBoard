@@ -1,12 +1,12 @@
 import json
-from agents import load_agent
-from environment import load_environment
-from llm import load_llm
-from common.registry import registry
+from AgentBoard.agentboard.agents import load_agent
+from AgentBoard.agentboard.environment import load_environment
+from AgentBoard.agentboard.llm import load_llm
+from AgentBoard.agentboard.common.registry import registry
 import copy
 
-from utils.logging.logger import TaskLogger
-from utils.logging.agent_logger import AgentLogger
+from AgentBoard.agentboard.utils.logging.logger import TaskLogger
+from AgentBoard.agentboard.utils.logging.agent_logger import AgentLogger
 logger = AgentLogger(__name__)
 
 

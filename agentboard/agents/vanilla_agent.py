@@ -1,7 +1,7 @@
 import pdb
 
-from agents.base_agent import BaseAgent
-from common.registry import registry
+from AgentBoard.agentboard.agents.base_agent import BaseAgent
+from AgentBoard.agentboard.common.registry import registry
 # from rouge import Rouge
 import json
 import random

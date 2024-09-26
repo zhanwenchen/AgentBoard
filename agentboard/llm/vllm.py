@@ -2,8 +2,8 @@ from vllm import LLM, SamplingParams
 import pdb
 import sys
 sys.path.append('.')
-from common.registry import registry
-from prompts.prompt_template import prompt_templates
+from AgentBoard.agentboard.common.registry import registry
+from AgentBoard.agentboard.prompts.prompt_template import prompt_templates
 
 
 

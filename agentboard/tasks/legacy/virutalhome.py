@@ -2,8 +2,8 @@ import os
 import pdb
 import json
 import re
-from llm import load_llm
-from agents import load_agent
+from AgentBoard.agentboard.llm import load_llm
+from AgentBoard.agentboard.agents import load_agent
 
 class EvalVirtualhome:
     def __init__(self,

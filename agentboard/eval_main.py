@@ -9,10 +9,10 @@ import json
 import time
 import argparse
 from dotenv import load_dotenv
-from tasks import load_task
-from llm import load_llm
-from utils.logging.agent_logger import AgentLogger
-from utils.logging.logger import SummaryLogger
+from AgentBoard.agentboard.tasks import load_task
+from AgentBoard.agentboard.llm import load_llm
+from AgentBoard.agentboard.utils.logging.agent_logger import AgentLogger
+from AgentBoard.agentboard.utils.logging.logger import SummaryLogger
 
 
 logger = AgentLogger(__name__)
@@ -21,20 +21,20 @@ warnings.filterwarnings("ignore")
 TASKS=["alfworld", "jericho", "pddl", "webshop", "webarena", "tool-query", "tool-operation", "babyai", "scienceworld"]
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(description="Testing")
+# def parse_args():
+#     parser = argparse.ArgumentParser(description="Testing")
 
-    parser.add_argument("--cfg-path", required=True, help="path to configuration file.")
-    parser.add_argument("--tasks", required=True, type=str, nargs='+',help="specify the tasks")
-    parser.add_argument("--model", required=True ,help="specify the models, available models are stated in the configuration file")
-    parser.add_argument("--wandb", action="store_true", help="specify whether the wandb board is needed")
-    parser.add_argument("--log_path", required=False, default='', help="specify the place to store the resuls")
-    parser.add_argument("--project_name", required=False, default='', help="specify the project name for wandb")
-    parser.add_argument("--baseline_dir", required=False, default='', help="specify the baseline loggings for wandb baseline comparison visualization")
-    parser.add_argument("--max_num_steps", required=False, default=30, help="specify the maximum number of steps used to finish the problems")
-    args = parser.parse_args()
+#     parser.add_argument("--cfg-path", required=True, help="path to configuration file.")
+#     parser.add_argument("--tasks", required=True, type=str, nargs='+',help="specify the tasks")
+#     parser.add_argument("--model", required=True ,help="specify the models, available models are stated in the configuration file")
+#     parser.add_argument("--wandb", action="store_true", help="specify whether the wandb board is needed")
+#     parser.add_argument("--log_path", required=False, default='', help="specify the place to store the resuls")
+#     parser.add_argument("--project_name", required=False, default='', help="specify the project name for wandb")
+#     parser.add_argument("--baseline_dir", required=False, default='', help="specify the baseline loggings for wandb baseline comparison visualization")
+#     parser.add_argument("--max_num_steps", required=False, default=30, help="specify the maximum number of steps used to finish the problems")
+#     args = parser.parse_args()
 
-    return args
+#     return args
 
 def path_constructor(loader, node):
     path_matcher = re.compile(r'\$\{([^}^{]+)\}')
@@ -55,15 +55,15 @@ def load_config(cfg_path, args):
     env_config = config["env"]
     run_config = config["run"]
     
-    if args.log_path != '':
-        run_config["log_path"] = args.log_path
-    if args.project_name != '':
-        run_config["project_name"] = args.project_name
-    if args.baseline_dir != '':
-        run_config["baseline_dir"] = args.baseline_dir
+    if args.ab_log_path != '':
+        run_config["log_path"] = args.ab_log_path
+    if args.ab_project_name != '':
+        run_config["project_name"] = args.ab_project_name
+    if args.ab_baseline_dir != '':
+        run_config["baseline_dir"] = args.ab_baseline_dir
         
-    run_config["wandb"] = args.wandb
-    run_config["max_num_steps"] = args.max_num_steps
+    run_config["wandb"] = args.ab_wandb
+    run_config["max_num_steps"] = args.ab_max_num_steps
     
     return llm_config, agent_config, env_config, run_config
   
@@ -86,12 +86,12 @@ def check_log_paths_are_ready(log_dir, baseline_dir):
             
     return True
 
-def main():
+def main(args):
     load_dotenv()  # take environment variables from .env., load openai api key, tool key, wandb key, project path...
 
-    args = parse_args()
-    llm_config, agent_config, env_config, run_config = load_config(args.cfg_path, args) 
-    llm_config = llm_config[args.model]
+    # args = parse_args()
+    llm_config, agent_config, env_config, run_config = load_config(args.ab_cfg_path, args)
+    llm_config = llm_config[args.ab_model]
     
     #---------------------------------------------- load llm -----------------------------------------------------
     logger.info("Start loading language model")
@@ -136,7 +136,7 @@ def main():
         if "_summary" not in line: 
             log_history[json.loads(line.strip())["task_name"]] = json.loads(line.strip())
 
-    task_names = args.tasks if args.tasks != ["all"] else TASKS
+    task_names = args.ab_tasks if args.ab_tasks != ["all"] else TASKS
 
     logger.info("Tested tasks: " + " ".join(log_history))
     
