@@ -18,3 +18,9 @@ agentboard/environment/WebShop/subreward_log*
 **/.auth
 */__pycache__/
 /.ipynb_checkpoints/*
+.vscode/settings.json
+.env
+.mypy_cache/
+__pycache__/
+*.egg-info
+config.py

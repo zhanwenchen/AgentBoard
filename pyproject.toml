@@ -1,0 +1,15 @@
+[tool.setuptools.packages.find]
+where = ["src/"]
+include = ["agentboard.agents", "agentboard.common", "agentboard.environment", "agentboard.llm", "agentboard.llm", "agentboard.prompts", "agentboard.tasks", "agentboard.utils"]
+
+[project]
+name = "agentboard"
+version = "2024.0.0"
+authors = [
+  {name = "Zhanwen Chen", email = "zhanwenchen@example.com"},
+]
+maintainers = [
+  {name = "Zhanwen Chen", email = "zhanwenchen@example.com"},
+]
+
+requires-python = ">= 3.11"

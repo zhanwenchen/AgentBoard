@@ -59,17 +59,15 @@ llm:
       use_parser: False
   gpt-4:
       name: gpt_azure
-      system_message: "You are a helpful assistant."
       engine: gpt-4
       context_length: 8192
       use_azure: True
       temperature: 0.
       top_p: 1
-      retry_delays: 30
+      retry_delays: 20
       max_retry_iters: 15
       stop: "\n"
       use_parser: False
-      max_tokens: 100
   claude2:
       name: claude
       engine: claude-2
@@ -133,7 +131,7 @@ llm:
       dtype: float16
       use_parser: True
   llama2-13b:
-      name: vllm
+      name: hg
       engine: meta-llama/Llama-2-13b-chat-hf
       max_tokens: 100
       temperature: 0.
@@ -144,7 +142,7 @@ llm:
       ngpu: 2
       use_parser: True
   llama2-70b:
-      name: vllm
+      name: hg
       engine:  meta-llama/Llama-2-70b-chat-hf
       max_tokens: 100
       temperature: 0.
@@ -153,63 +151,6 @@ llm:
       context_length: 4096
       dtype: float16
       ngpu: 4
-      use_parser: True
-  llama3.1-8b-untrained:
-      name: vllm
-      engine:  meta-llama/Llama-3.1-8B-Instruct
-      max_tokens: 100
-      temperature: 0.
-      top_p: 1
-      stop:
-      context_length: 4096
-      dtype: float16
-      ngpu: 2
-      use_parser: True
-  llama3.1-8b-finetuned-dpo-oracle-flat:
-      name: vllm
-      engine:  /home/zhanwen/finetuners/saves/llama3.1-8b/lora/dpo/checkpoint-560-merged
-      max_tokens: 100
-      temperature: 0.
-      top_p: 1
-      stop:
-      context_length: 4096
-      dtype: float16
-      ngpu: 2
-      use_parser: True
-  llama3.1-8b-finetuned-dpo-oracle-flat-100:
-      name: vllm
-      # engine:  /home/zhanwen/finetuners/saves/llama3.1-8b/lora/dpo/checkpoint-560-merged
-      engine:  /home/zhanwen/finetuners/saves/Llama-3.1-8B-Instruct/lora/train_2024-11-08-19-58-24/checkpoint-100-merged
-      max_tokens: 100
-      temperature: 0.
-      top_p: 1
-      stop:
-      context_length: 4096
-      dtype: float16
-      ngpu: 2
-      use_parser: True
-  llama3.1-8b-finetuned-dpo-oracle-flat-1000:
-      name: vllm
-      # engine:  /home/zhanwen/finetuners/saves/llama3.1-8b/lora/dpo/checkpoint-560-merged
-      engine:  /home/zhanwen/finetuners/saves/Llama-3.1-8B-Instruct/lora/train_2024-11-08-19-58-24/checkpoint-1000-merged
-      max_tokens: 100
-      temperature: 0.
-      top_p: 1
-      stop:
-      context_length: 4096
-      dtype: float16
-      ngpu: 2
-      use_parser: True
-  llama3.1-8b-finetuned-dpo-wrong-data:
-      name: vllm
-      engine:  /home/zhanwen/finetuners/saves/llama3.1-8b/lora/dpo/checkpoint-20-merged
-      max_tokens: 100
-      temperature: 0.
-      top_p: 1
-      stop:
-      context_length: 4096
-      dtype: bfloat16
-      ngpu: 2
       use_parser: True
 
   vicuna-13b-16k:
@@ -242,7 +183,7 @@ env:
     game_name: [gripper, blockworld, barman, tyreworld]
     env_num_per_task: 20
     check_actions: "check valid actions"
-    init_prompt_path: ${PROJECT_PATH}/src/agentboard/prompts/VanillaAgent/pddl_vanilla_prompt.json
+    init_prompt_path: ${PROJECT_PATH}/agentboard/src/agentboard/prompts/VanillaAgent/pddl_vanilla_prompt.json
     label_path: ${PROJECT_PATH}/data/pddl/test.jsonl
 
   jericho:
@@ -252,7 +193,7 @@ env:
     label_path: ${PROJECT_PATH}/data/jericho/test.jsonl
     check_actions: "check valid actions"
     check_inventory: "inventory"
-    init_prompt_path: ${PROJECT_PATH}/src/agentboard/prompts/VanillaAgent/jericho_vanilla_prompt.json
+    init_prompt_path: ${PROJECT_PATH}/agentboard/src/agentboard/prompts/VanillaAgent/jericho_vanilla_prompt.json
 
 
   babyai:
@@ -263,7 +204,7 @@ env:
     env_num_per_task: 4
     check_actions: "check valid actions"
     check_inventory: "inventory"
-    init_prompt_path: ${PROJECT_PATH}/src/agentboard/prompts/VanillaAgent/babyai_vanilla_prompt.json
+    init_prompt_path: ${PROJECT_PATH}/agentboard/src/agentboard/prompts/VanillaAgent/babyai_vanilla_prompt.json
 
   tool-query:
     name: tool-query
@@ -271,15 +212,15 @@ env:
     dataset_dir: ${PROJECT_PATH}/data
     result_dir: ${PROJECT_PATH}/results/query
     check_actions: "check_valid_actions"
-    init_prompt_path: ${PROJECT_PATH}/src/agentboard/prompts
-
+    init_prompt_path: ${PROJECT_PATH}/agentboard/src/agentboard/prompts
+  
   tool-operation:
     name: tool-operation
     seed: 1234
     dataset_dir: ${PROJECT_PATH}/data
     result_dir: ${PROJECT_PATH}/results/operation
     check_actions: "check_valid_actions"
-    init_prompt_path: ${PROJECT_PATH}/src/agentboard/prompts
+    init_prompt_path: ${PROJECT_PATH}/agentboard/src/agentboard/prompts
 
   scienceworld:
     name: scienceworld
@@ -287,29 +228,29 @@ env:
     seed: 0
     check_inventory: True
     check_actions: check valid actions
-    init_prompt_path: ${PROJECT_PATH}/src/agentboard/prompts/VanillaAgent/scienceworld_base.json
+    init_prompt_path: ${PROJECT_PATH}/agentboard/src/agentboard/prompts/VanillaAgent/scienceworld_base.json
     label_path: ${PROJECT_PATH}/data/scienceworld/test.jsonl
 
 
   alfworld:
     name: alfworld
-    base_config: ${PROJECT_PATH}/src/agentboard/environment/alfworld/base_config.yaml
-    split: eval_out_of_distribution
+    base_config: ${PROJECT_PATH}/agentboard/src/agentboard/environment/alfworld/base_config.yaml
+    split: train
     batch_size: 1
     label_path: ${PROJECT_PATH}/data/alfworld/test.jsonl
     check_inventory: True
     check_actions: check valid actions
-    init_prompt_path: ${PROJECT_PATH}/src/agentboard/prompts/VanillaAgent/alfworld_base.json
-
+    init_prompt_path: ${PROJECT_PATH}/agentboard/src/agentboard/prompts/VanillaAgent/alfworld_base.json
+  
   webshop:
     name: webshop
     web_url: http://127.0.0.1:3000
-    subreward_floder: ${PROJECT_PATH}/src/agentboard/WebShop/subreward_log
+    subreward_floder: ${PROJECT_PATH}/agentboard/src/agentboard/WebShop/subreward_log
     max_step: 50
     start_idx: 0
     end_idx: 251
     to_print: True
-    init_prompt_path: ${PROJECT_PATH}/src/agentboard/prompts/VanillaAgent/webshop_vanilla.json
+    init_prompt_path: ${PROJECT_PATH}/agentboard/src/agentboard/prompts/VanillaAgent/webshop_vanilla.json
     label_path: ${PROJECT_PATH}/data/webshop/test.jsonl
 
   webarena:
@@ -324,7 +265,7 @@ env:
     sleep_after_execution: 2.5
     action_set_tag: id_accessibility_tree
     render_screenshot: True
-    init_prompt_path: ${PROJECT_PATH}/src/agentboard/prompts/VanillaAgent/webbrowse_vanilla.json
+    init_prompt_path: ${PROJECT_PATH}/agentboard/src/agentboard/prompts/VanillaAgent/webbrowse_vanilla.json
     label_path: ${PROJECT_PATH}/data/webarena/test.jsonl
     start_test_id: 0
     test_case_count: 245
