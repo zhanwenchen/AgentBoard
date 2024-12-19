@@ -29,11 +29,10 @@ class VLLM:
             max_tokens=max_tokens
         )
         if self.context_length > 8192:
-            llm = LLM(model=model, dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True)
+            llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True)
         else:
-            # llm = LLM(model=model, dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=self.context_length)
-            # llm = LLM(model=model, dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.74612, max_num_batched_tokens=8192)
-            llm = LLM(model=model, dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True)
+            # breakpoint()
+            llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True)
         self.tokenizer = llm.get_tokenizer()
         self.model_str = model_str = model.lower()
         self.is_vicuna = 'vicuna' in model_str
@@ -58,7 +57,7 @@ class VLLM:
         else:
             raise NotImplementedError
         self.full_prompt_format = full_prompt.format
-        
+
     def make_prompt(self, system_message: str, prompt: str) -> str:
         system_message += "Generate your next step of action after Action. Action must not be empty. e.g. Action: put down cup. \n"
 
@@ -69,12 +68,12 @@ class VLLM:
         assert full_prompt is not None
         outputs = self.llm_generate([full_prompt], self.sampling_params)
         outputs = outputs[0].outputs[0].text
-        
+
         if self.is_vicuna is True:
             # Note: vicuna tends to generate get\_search\_movie with Action Input: {"movie\_name": "Crouching Tiger, Hidden Dragon"} when using tools
             outputs = outputs.replace(r'\_', '_')
         self.logger_info(f"Model {self.model_str}.generate: full_prompt={full_prompt}\n\noutputs={outputs}")
-        return True, outputs 
+        return True, outputs
 
     def num_tokens_from_messages(self, messages):
         prompt = messages[1]["content"]
