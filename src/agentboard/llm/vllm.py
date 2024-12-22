@@ -63,10 +63,10 @@ class VLLM:
 
         return self.full_prompt_format(system_prompt=system_message, prompt=prompt).strip()
 
-    def generate(self, system_message, prompt):
+    def generate(self, system_message, prompt, use_tqdm=False):
         full_prompt = self.make_prompt(system_message, prompt)
         assert full_prompt is not None
-        outputs = self.llm_generate([full_prompt], self.sampling_params)
+        outputs = self.llm_generate([full_prompt], self.sampling_params, use_tqdm=use_tqdm)
         outputs = outputs[0].outputs[0].text
 
         if self.is_vicuna is True:
@@ -103,3 +103,9 @@ class VLLM:
                    stop=stop,
                    ngpu=ngpu,
                    d_type=dtype)
+
+    def __del__(self):
+        del self.llm.llm_engine.model_executor
+        del self.llm
+        del self.model, self.tokenizer
+        del self
