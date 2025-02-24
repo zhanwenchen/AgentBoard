@@ -1,11 +1,11 @@
 from argparse import ArgumentParser
 import os
 import re
-import wandb
 import warnings
-import yaml
 import json
+import yaml
 from dotenv import load_dotenv
+import wandb
 from agentboard.tasks import load_task
 from agentboard.llm import load_llm
 from agentboard.utils.logging.agent_logger import AgentLogger
@@ -92,6 +92,9 @@ def main(args, llm_config_eval: dict=None):
         llm_config = llm_config[args.ab_model]
     except:
         raise ValueError(f'args.ab_model={args.ab_model} is not in the llm_config.keys()={llm_config.keys()}')
+    logger.error(f'llm_config={llm_config}')
+    # with open() as f:
+    #     yaml.dump(llm_config, f)
     logger.info(f'Got args.ab_model={args.ab_model}')
 
     #---------------------------------------------- load llm -----------------------------------------------------
@@ -143,6 +146,7 @@ def main(args, llm_config_eval: dict=None):
     logger.info("Tested tasks: " + " ".join(log_history))
 
     #------------------------------------------------- start evaluation -------------------------------------------
+    task = None
     for task_name in task_names:
 
         # If the results of the task is already available at {log_path}/all_results.txt, skip the evaluation of this task to avoid rerunning.
@@ -190,6 +194,7 @@ def main(args, llm_config_eval: dict=None):
 
 
     agentboard.log_summary()
+    del task, agentboard, llm
 
 
 if __name__ == "__main__":

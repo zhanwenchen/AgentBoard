@@ -1,3 +1,4 @@
+import logging
 from vllm import LLM, SamplingParams
 from agentboard.common.registry import registry
 from agentboard.prompts.prompt_template import prompt_templates
@@ -16,6 +17,8 @@ class VLLM:
                  ngpu=4,
                  d_type='bfloat16'
                  ):
+        logger = AgentLogger(__name__)
+        self.logger_info = logger.info
         self.engine = self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
@@ -28,22 +31,28 @@ class VLLM:
             stop=stop,
             max_tokens=max_tokens
         )
-        if self.context_length > 8192:
+        logger.info(f'vllm.py: unable to load model={model}')
+        try:
             llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True)
-        else:
-            # breakpoint()
-            llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True)
+        except Exception as e:
+            raise RuntimeError(f'vllm.py: unable to load model={model}') from e
+        # if self.context_length > 8192:
+        #     llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True)
+        # else:
+        #     # breakpoint()
+        #     llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True)
         self.tokenizer = llm.get_tokenizer()
         self.model_str = model_str = model.lower()
         self.is_vicuna = 'vicuna' in model_str
         self.llm_generate = llm.generate
         self.llm = llm
-        logger = AgentLogger(__name__)
-        self.logger_info = logger.info
+
         if "codellama-13b" in model_str:
             full_prompt = prompt_templates["codellama-13b"]
         elif "codellama-34b" in model_str:
             full_prompt = prompt_templates["codellama-34b"]
+        elif "llama3" in model_str or "llama-3" in model_str:
+            full_prompt = prompt_templates["llama3"]
         elif "llama" in model_str:
             full_prompt = prompt_templates["llama"]
         elif 'lemur' in model_str:
