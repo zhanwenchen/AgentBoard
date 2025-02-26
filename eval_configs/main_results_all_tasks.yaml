@@ -176,7 +176,18 @@ llm:
       dtype: bfloat16
       ngpu: 2
       use_parser: True
-  llama3.2-3b-instruct:
+  llama3.1-8b-instruct:
+      name: vllm
+      engine: meta-llama/Llama-3.2-3B-Instruct
+      max_tokens: 100
+      temperature: 0.
+      top_p: 1
+      stop:
+      context_length: 4096
+      dtype: bfloat16
+      ngpu: 2
+      use_parser: True
+  Llama-3.2-3B-Instruct:
       name: vllm
       engine: meta-llama/Llama-3.2-3B-Instruct
       max_tokens: 100

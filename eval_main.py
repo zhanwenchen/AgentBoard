@@ -6,6 +6,7 @@ import json
 import yaml
 from dotenv import load_dotenv
 import wandb
+from wandb import Api
 from agentboard.tasks import load_task
 from agentboard.llm import load_llm
 from agentboard.utils.logging.agent_logger import AgentLogger
@@ -16,6 +17,8 @@ logger = AgentLogger(__name__)
 warnings.filterwarnings("ignore")
 
 TASKS=["alfworld", "jericho", "pddl", "webshop", "webarena", "tool-query", "tool-operation", "babyai", "scienceworld"]
+WANDB_TEAM = 'dri-ice'
+WANDB_PROJECT = 'finetuners'
 
 
 def parse_args():
@@ -81,7 +84,19 @@ def check_log_paths_are_ready(log_dir, baseline_dir):
 
     return True
 
-def main(args, llm_config_eval: dict=None):
+
+def get_wandb_run(wandb_run_id: str, logger):
+    try:
+        logger.error(f'train.get_wandb_run: trying to load wandb_run_id={wandb_run_id}')
+        wandb_run_current = Api().from_path(f'{WANDB_TEAM}/{WANDB_PROJECT}/runs/{wandb_run_id}')
+    except Exception as e:
+        logger.error(f'train.get_wandb_run: wandb_run_id={wandb_run_id} not found')
+        raise RuntimeError(f'train.get_wandb_run: wandb_run_id={wandb_run_id} not found') from e
+    return wandb_run_current
+
+
+
+def main(args, llm_config_eval: dict=None, wandb_run_id: str=None):
     load_dotenv()  # take environment variables from .env., load openai api key, tool key, wandb key, project path...
 
     # args = parse_args()
@@ -112,7 +127,7 @@ def main(args, llm_config_eval: dict=None):
         logger.info("Wandb is not enabled")
 
         wandb.init(mode="disabled")
-    else:
+    elif wandb_run_id is None:
         wandb.init(
             project=run_config["project_name"],
             name="{model_name}_{engine_name}".format(model_name=llm_config["name"], engine_name=llm_config["engine"]),
@@ -123,6 +138,8 @@ def main(args, llm_config_eval: dict=None):
                         'run_config': run_config},
 
         )
+    else:
+        get_wandb_run(wandb_run_id, logger)
 
     log_dir = run_config.get("log_path", None)
 
@@ -134,6 +151,7 @@ def main(args, llm_config_eval: dict=None):
     agentboard = SummaryLogger(baseline_dir=baseline_path, log_path=log_dir)
 
     log_history = {}
+    fpath_all_results = os.path.join(log_dir, 'all_results.txt')
     with open(os.path.join(log_dir, 'all_results.txt'), "r") as f:
         for line in f:
             logger.info(line)
@@ -153,7 +171,7 @@ def main(args, llm_config_eval: dict=None):
         # If you wish to rerun a task, make sure to remove the line recording previous task results from {log_path}/all_results.txt
 
         if task_name in log_history:
-            logger.warn(f'task_name: {task_name} already exists in the log_history = {log_history},')
+            raise RuntimeError(f'task_name: {task_name} already exists in the log_history = {log_history}, fpath_all_results={fpath_all_results}')
             logger.info(f"Task {task_name} has been evaluated, skip")
 
 

@@ -68,6 +68,7 @@ class VLLM:
         self.full_prompt_format = full_prompt.format
 
     def make_prompt(self, system_message: str, prompt: str) -> str:
+        # breakpoint()
         system_message += "Generate your next step of action after Action. Action must not be empty. e.g. Action: put down cup. \n"
 
         return self.full_prompt_format(system_prompt=system_message, prompt=prompt).strip()
