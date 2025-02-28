@@ -24,9 +24,9 @@ class HgModels:
                  stop='\n',
                  d_type='bfloat16'
                  ):
-        
+
         # access_token = os.environ["HF_KEY"]
-        
+
         # self.tokenizer = AutoTokenizer.from_pretrained(model, token=access_token)
         self.tokenizer = AutoTokenizer.from_pretrained(model)
         # torch_dtype = torch.float16 if d_type == 'float16' else torch.float32
@@ -51,7 +51,7 @@ class HgModels:
                                                         torch_dtype=torch_dtype)
         #self.StopCriteria = EosListStoppingCriteria(self.tokenizer(stop))
 
-        
+
     def make_prompt(self, system_message, prompt):
         full_prompt = None
         system_message += "Generate your next step of action after Action. Action must not be empty. e.g. Action: put down cup. \n"
@@ -61,21 +61,23 @@ class HgModels:
         elif "codellama-34b" in self.model.lower():
             full_prompt = prompt_templates["codellama-34b"].format(system_prompt=system_message, prompt=prompt)
             full_prompt = full_prompt.strip()
-            
+        elif "llama3" in self.model.lower():
+            full_prompt = prompt_templates["llama3"].format(system_prompt=system_message, prompt=prompt)
+            full_prompt = full_prompt.strip()
         elif "llama" in self.model.lower():
             full_prompt = prompt_templates["llama"].format(system_prompt=system_message, prompt=prompt)
             full_prompt = full_prompt.strip()
-            
+
         elif 'lemur' in self.model.lower():
             full_prompt = prompt_templates["lemur"].format(system_prompt=system_message, prompt=prompt)
             full_prompt = full_prompt.strip()
-            
+
         elif 'vicuna' in self.model.lower():
             full_prompt = prompt_templates["vicuna"].format(system_prompt=system_message, prompt=prompt)
             full_prompt = full_prompt.strip()
         else:
             raise NotImplementedError
-        
+
         return full_prompt
 
     def generate(self, system_message, prompt):
@@ -101,7 +103,7 @@ class HgModels:
         if 'vicuna' in self.model.lower():
              output_texts = output_texts.replace(r'\_', '_')
         return True, output_texts
-    
+
     def num_tokens_from_messages(self, messages):
         prompt = messages[1]["content"]
         system_message = messages[0]["content"]
@@ -112,7 +114,7 @@ class HgModels:
         return num_tokens
     @classmethod
     def from_config(cls, config):
-        
+
         engine = config.get("engine", "gpt-35-turbo")
         temperature = config.get("temperature", 0)
         max_tokens = config.get("max_tokens", 100)
@@ -121,7 +123,7 @@ class HgModels:
         context_length = config.get("context_length", 4096)
         #ngpu = config.get("ngpu", 4)
         dtype = config.get("dtype", 'bfloat16')
-        
+
         return cls(model=engine,
                   temperature=temperature,
                   max_tokens=max_tokens,
