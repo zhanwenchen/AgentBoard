@@ -1,4 +1,3 @@
-import logging
 from vllm import LLM, SamplingParams
 from agentboard.common.registry import registry
 from agentboard.prompts.prompt_template import prompt_templates
@@ -31,11 +30,14 @@ class VLLM:
             stop=stop,
             max_tokens=max_tokens
         )
-        logger.info(f'vllm.py: unable to load model={model}')
+        logger.info(f'vllm.py: loading model={model}')
+
         try:
-            llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True)
+            # self.llm = llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True, distributed_executor_backend='ray')
+            self.llm = llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True, disable_custom_all_reduce=True)
         except Exception as e:
             raise RuntimeError(f'vllm.py: unable to load model={model}') from e
+        logger.info(f'vllm.py: loaded model={model}')
         # if self.context_length > 8192:
         #     llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True)
         # else:
@@ -45,7 +47,6 @@ class VLLM:
         self.model_str = model_str = model.lower()
         self.is_vicuna = 'vicuna' in model_str
         self.llm_generate = llm.generate
-        self.llm = llm
 
         if "codellama-13b" in model_str:
             full_prompt = prompt_templates["codellama-13b"]
@@ -82,7 +83,7 @@ class VLLM:
         if self.is_vicuna is True:
             # Note: vicuna tends to generate get\_search\_movie with Action Input: {"movie\_name": "Crouching Tiger, Hidden Dragon"} when using tools
             outputs = outputs.replace(r'\_', '_')
-        self.logger_info(f"Model {self.model_str}.generate: full_prompt={full_prompt}\n\noutputs={outputs}")
+        # self.logger_info(f"Model {self.model_str}.generate: full_prompt={full_prompt}\n\noutputs={outputs}")
         return True, outputs
 
     def num_tokens_from_messages(self, messages):
@@ -115,7 +116,9 @@ class VLLM:
                    d_type=dtype)
 
     def __del__(self):
-        del self.llm.llm_engine.model_executor
-        del self.llm
-        del self.model, self.tokenizer
+        try:
+            del self.llm.llm_engine.model_executor
+        except:
+            pass
+        del self.llm, self.model, self.tokenizer
         del self

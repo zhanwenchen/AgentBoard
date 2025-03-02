@@ -1,4 +1,7 @@
-import logging
+from logging import Logger, INFO, NOTSET, FileHandler, Formatter, StreamHandler, addLevelName, setLoggerClass
+
+
+Formatter_format = Formatter.format
 
 # ANSI escape sequences for colors
 BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
@@ -13,7 +16,8 @@ COLORS = {
     'FINISH': YELLOW,
 }
 
-class ColoredFormatter(logging.Formatter):
+
+class ColoredFormatter(Formatter):
     def __init__(self, msg, datefmt=None):
         super().__init__(msg, datefmt)
 
@@ -23,19 +27,19 @@ class ColoredFormatter(logging.Formatter):
             color_code = 30 + COLORS[levelname]
             message_color = COLOR_SEQ % color_code + record.getMessage() + RESET_SEQ
             record.msg = message_color
-        return logging.Formatter.format(self, record)
-    
-class ColoredHandler(logging.StreamHandler):
+        return Formatter_format(self, record)
+
+class ColoredHandler(StreamHandler):
     def __init__(self, filepath=None, stream=None):  # filepath: log saved path
         super().__init__(stream)
         self.file_handler = None
         if filepath is not None:
-            self.file_handler = logging.FileHandler(filepath)
+            self.file_handler = FileHandler(filepath)
 
         colored_formatter = ColoredFormatter('%(asctime)s | %(levelname)s | %(name)s | %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
         self.setFormatter(colored_formatter)
         if self.file_handler:
-            standard_formatter = logging.Formatter('%(asctime)s | %(levelname)s | %(name)s | %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+            standard_formatter = Formatter('%(asctime)s | %(levelname)s | %(name)s | %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
             self.file_handler.setFormatter(standard_formatter)
 
     def emit(self, record):
@@ -47,7 +51,7 @@ class ColoredHandler(logging.StreamHandler):
             record.msg = original_msg
             self.file_handler.emit(record)
 
-class AgentLogger(logging.Logger):
+class AgentLogger(Logger):
     GOAL_LEVEL_NUM = 100
     MESSAGE_LEVEL_NUM = 101
     ACTION_LEVEL_NUM = 102
@@ -55,20 +59,20 @@ class AgentLogger(logging.Logger):
     OBSERVATION_LEVEL_NUM = 104
     FINISH_LEVEL_NUM = 105
 
-    def __init__(self, name, level=logging.NOTSET, filepath=None):
+    def __init__(self, name, level=NOTSET, filepath=None):
         super().__init__(name, level)
         self.addHandler(ColoredHandler(filepath))
-        self.setLevel(logging.INFO)
+        self.setLevel(INFO)
 
     def goal(self, msg, *args, **kwargs):
         if self.isEnabledFor(self.GOAL_LEVEL_NUM):
             self._log(self.GOAL_LEVEL_NUM, msg, args, **kwargs)
-    
+
     def finish(self, msg, *args, **kwargs):
         if self.isEnabledFor(self.FINISH_LEVEL_NUM):
-            self._log(self.FINISH_LEVEL_NUM, msg, args, **kwargs)   
+            self._log(self.FINISH_LEVEL_NUM, msg, args, **kwargs)
 
-logging.addLevelName(AgentLogger.GOAL_LEVEL_NUM, "GOAL")
-logging.addLevelName(AgentLogger.FINISH_LEVEL_NUM, "FINISH")
+addLevelName(AgentLogger.GOAL_LEVEL_NUM, "GOAL")
+addLevelName(AgentLogger.FINISH_LEVEL_NUM, "FINISH")
 
-logging.setLoggerClass(AgentLogger)
+setLoggerClass(AgentLogger)

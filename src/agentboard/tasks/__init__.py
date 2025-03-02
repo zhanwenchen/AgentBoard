@@ -22,7 +22,7 @@ from agentboard.common.registry import registry
 # ]
 
 
-def load_task(name, run_config, llm_config, agent_config, env_config, llm=None):
+def load_task(name, run_config, llm_config, agent_config, env_config, llm=None, wandb_run=None):
     from agentboard.tasks.webshop import EvalWebshop
     from agentboard.tasks.alfworld import Evalalfworld
     from agentboard.tasks.webbrowse import EvalWebBrowse
@@ -31,6 +31,6 @@ def load_task(name, run_config, llm_config, agent_config, env_config, llm=None):
     from agentboard.tasks.scienceworld import EvalScienceworld
     from agentboard.tasks.jericho import EvalJericho
     from agentboard.tasks.tool import EvalTool
-    task = registry.get_task_class(name).from_config(run_config, llm_config, agent_config, env_config, llm=llm)
+    task = registry.get_task_class(name).from_config(run_config, llm_config, agent_config, env_config, llm=llm, wandb_run=wandb_run)
 
     return task
