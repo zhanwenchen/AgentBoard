@@ -1,3 +1,6 @@
+from gc import collect
+from torch.cuda import empty_cache
+from multiprocessing import context
 from vllm import LLM, SamplingParams
 from agentboard.common.registry import registry
 from agentboard.prompts.prompt_template import prompt_templates
@@ -30,14 +33,17 @@ class VLLM:
             stop=stop,
             max_tokens=max_tokens
         )
-        logger.info(f'vllm.py: loading model={model}')
-
+        logger.info(f'vllm.py: loading {model=} with {context_length=}')
+        collect()
+        empty_cache()
         try:
             # self.llm = llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True, distributed_executor_backend='ray')
-            self.llm = llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True, disable_custom_all_reduce=True)
+            # self.llm = llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True, disable_custom_all_reduce=True)
+            self.llm = llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=context_length, max_model_len=context_length, enable_lora=True, enforce_eager=True)
+            # self.llm = llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True)
         except Exception as e:
-            raise RuntimeError(f'vllm.py: unable to load model={model}') from e
-        logger.info(f'vllm.py: loaded model={model}')
+            raise RuntimeError(f'vllm.py: unable to load {model=}') from e
+        logger.info(f'vllm.py: loaded {model=} with {context_length=}')
         # if self.context_length > 8192:
         #     llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True)
         # else:
@@ -120,5 +126,17 @@ class VLLM:
             del self.llm.llm_engine.model_executor
         except:
             pass
-        del self.llm, self.model, self.tokenizer
+        try:
+            del self.llm
+        except:
+            pass
+        try:
+            del self.model
+        except:
+            pass
+        try:
+            del self.tokenizer
+        except:
+            pass
+
         del self

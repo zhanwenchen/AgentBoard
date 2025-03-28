@@ -1,3 +1,4 @@
+from time import sleep
 from typing import Dict, List, Any, Union, Optional, Tuple, Set
 from pathlib import Path
 from json import loads as json_loads, dumps as json_dumps
@@ -237,7 +238,7 @@ class SummaryLogger:
         )
 
         fig = Figure(data=data, layout=layout)
-        self.wandb_log({"summary/avg_metrics_comparison": Plotly(fig)})
+        self.wandb_log({"summary/avg_metrics_comparison": Plotly(fig)}, commit=True)
 
     def _calculate_avg_baseline_results(self, all_tasks: List[str]) -> Dict[str, Dict[str, float]]:
         """Calculate average baseline results across all tasks.
@@ -445,6 +446,7 @@ class TaskLogger:
             max_num_steps: Maximum number of steps in task execution
             baseline_dir: Directory containing baseline results for comparison
         """
+        self.wandb_run = wandb_run
         self.wandb_log = wandb_run.log
         self.task_name = task_name
         self.max_num_steps = max_num_steps
@@ -857,11 +859,37 @@ class TaskLogger:
         """
         # Log metrics to W&B table
         metrics_table = Table(columns=["Metric Name", "Metric Value (%)"])
-        metrics_table.add_data("Progress Rate", reward_score)
-        metrics_table.add_data("Success Rate", success_rate)
-        metrics_table.add_data("Grounding Accuracy", grounding_acc)
-        self.wandb_log({f'{self.task_name}/metrics': metrics_table})
+        # metrics_table.add_data("Progress Rate", reward_score)
+        metrics_table.add_data("progress_rate", reward_score)
+        # metrics_table.add_data("Success Rate", success_rate)
+        metrics_table.add_data("success_rate", success_rate)
+        # metrics_table.add_data("Grounding Accuracy", grounding_acc)
+        metrics_table.add_data("grounding_accuracy", grounding_acc)
+        self.wandb_log({f'{self.task_name}/metrics': metrics_table}, commit=True)
+        sleep(5)
+        # wandb_run.summary._as_dict()
+        # wandb_run.summary.keys()
+        # lol = wandb_run.summary.get(f'{self.task_name}/metrics')
+        # print(f'TaskLogger: {self.task_name} Metrics Logged')
+        # wandb_log = self.wandb_log
+        # wandb_run = self.wandb_run
+        # # wandb_run._backend.interface
+        # api = wandb_run._public_api()
 
+        # # We need to use the run_path to access history
+        # run_path = wandb_run._get_path()
+        # api_run = api.run(run_path)
+
+        # tables = {}
+        # history = api_run.history()
+
+        # # Extract tables from history
+        # for row in history:
+        #     for key, value in row.items():
+        #         if isinstance(value, dict) and value.get('_type') == 'table':
+        #             tables[key] = value
+        # self.wandb_run.project
+        # breakpoint()
         # Log comparison with baseline models
         self._log_baseline_comparison(success_rate, reward_score, grounding_acc)
 

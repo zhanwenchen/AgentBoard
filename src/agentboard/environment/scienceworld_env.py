@@ -33,22 +33,43 @@ class Scienceworld:
                 }
 
 
-    def load(self, task_name, var, simplificationStr):
+    def load(self, task_name: str, var: str, simplificationStr: str):
+        """Load a task from the environment.
+
+        Args:
+            task_name: The name of the task to load.
+            var: The variant of the task.
+            simplificationStr: Simplification string for the environment.
+
+        Returns:
+            The loaded environment.
+
+        Raises:
+            KeyError: If the task label cannot be found.
+        """
         env = self.env.load(task_name, var, simplificationStr=simplificationStr)
-        self.cur_label = self.labels[f"{task_name}_{var}"]
+        try:
+            # Use underscore instead of hyphen to match the key format in __init__
+            self.cur_label = self.labels[f"{task_name}_{var}"]
+        except KeyError as e:
+            # Print available keys for debugging
+            print(f"Task key '{task_name}_{var}' not found in available labels.")
+            print(f"Available keys: {list(self.labels.keys())}")
+            raise e
+            # breakpoint()
         self.selected_obs = self.cur_label["subgoals"]
         self.modified_goal = self.cur_label["modified_goal"]
-        self.difficulty = self.cur_label["difficulty"] 
+        self.difficulty = self.cur_label["difficulty"]
         self.finished_sub_goal = [0 for i in range(len(self.selected_obs))]
         return env
-    
+
     def inventory(self):
         return self.env.inventory()
-    
+
     def parseAction(self, action):
         action = action.strip()
         return action
-    
+
     def step(self, action):
         action = self.parseAction(action)
         observation = ''
@@ -99,7 +120,7 @@ class Scienceworld:
 
     def getGoldActionSequence(self):
         return self.env.getGoldActionSequence()
-    
+
     def reset(self):
         self.reward = 0.
         self.done = False
@@ -113,10 +134,27 @@ class Scienceworld:
 
     def get_reward(self):
         return sum(self.finished_sub_goal) * 1.0 / len(self.finished_sub_goal)
-    
+
     def _check_is_done(self, selected_obs):
         return sum(self.finished_sub_goal) >= len(selected_obs)
-    
+
+    def should_continue_iteration(self) -> bool:
+        """Determines if there are remaining subgoals to complete in the current task.
+
+        This method checks the progress of subgoal completion and returns whether
+        the agent should continue iterating on the current task.
+
+        Returns:
+            bool: True if there are remaining subgoals to complete, False if all
+                  subgoals have been completed.
+        """
+        if not self.selected_obs or len(self.selected_obs) == 0:
+            return False
+
+        # Check if there are any subgoals that haven't been completed yet
+        incomplete_subgoals = sum(1 for completed in self.finished_sub_goal if completed == 0)
+        return incomplete_subgoals > 0
+
     @classmethod
     def from_config(cls, cfg):
         serverPath = cfg.get("serverPath", None)

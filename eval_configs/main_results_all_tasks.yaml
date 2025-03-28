@@ -161,7 +161,7 @@ llm:
       temperature: 0.
       top_p: 1
       stop:
-      context_length: 4096
+      context_length: 4096 # 128000
       dtype: bfloat16
       ngpu: 2
       use_parser: True
@@ -172,7 +172,7 @@ llm:
       temperature: 0.
       top_p: 1
       stop:
-      context_length: 4096
+      context_length: 4096 # 128000
       dtype: bfloat16
       ngpu: 2
       use_parser: True
@@ -183,7 +183,7 @@ llm:
       temperature: 0.
       top_p: 1
       stop:
-      context_length: 4096
+      context_length: 4096 # 128000
       dtype: bfloat16
       ngpu: 2
       use_parser: True
@@ -194,7 +194,7 @@ llm:
       temperature: 0.
       top_p: 1
       stop:
-      context_length: 4096
+      context_length: 4096 # 128000
       dtype: bfloat16
       ngpu: 2
       use_parser: True
@@ -205,7 +205,7 @@ llm:
       temperature: 0.
       top_p: 1
       stop:
-      context_length: 4096
+      context_length: 4096 # 128000
       dtype: float16
       ngpu: 2
       use_parser: True
