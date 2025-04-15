@@ -1,6 +1,7 @@
 from gc import collect
+from json import load as json_load
+from pathlib import Path
 from torch.cuda import empty_cache
-from multiprocessing import context
 from vllm import LLM, SamplingParams
 from agentboard.common.registry import registry
 from agentboard.prompts.prompt_template import prompt_templates
@@ -50,7 +51,13 @@ class VLLM:
         #     # breakpoint()
         #     llm = LLM(model=str(model), dtype=d_type, tensor_parallel_size=ngpu, gpu_memory_utilization=0.9, max_num_batched_tokens=8192, max_model_len=8192, enable_lora=True)
         self.tokenizer = llm.get_tokenizer()
-        self.model_str = model_str = model.lower()
+        path_model = Path(model)
+        if path_model.is_dir():
+            with (path_model / 'config.json').open() as f:
+                config = json_load(f)
+            self.model_str = model_str = config['_name_or_path'].lower()
+        else:
+            self.model_str = model_str = model.lower()
         self.is_vicuna = 'vicuna' in model_str
         self.llm_generate = llm.generate
 
@@ -71,7 +78,7 @@ class VLLM:
         elif 'mistral' in model_str:
             full_prompt = prompt_templates["mistral"]
         else:
-            raise NotImplementedError
+            raise NotImplementedError(f'vllm.py: model {model_str} not supported')
         self.full_prompt_format = full_prompt.format
 
     def make_prompt(self, system_message: str, prompt: str) -> str:

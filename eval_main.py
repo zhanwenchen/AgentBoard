@@ -218,15 +218,17 @@ def main(args, llm_config_eval: dict, wandb_run_id: str):
     load_dotenv()  # take environment variables from .env., load openai api key, tool key, wandb key, project path...
 
     # args = parse_args()
+    logger = AgentLogger(__name__)
+    ab_model = args.ab_model
+    logger.info(f'Got args.ab_model={args.ab_model}')
     llm_config, agent_config, env_config, run_config = load_config(args.ab_cfg_path, args.ab_log_path, args.ab_project_name, args.ab_baseline_dir, args.ab_wandb, args.ab_max_num_steps)
     if llm_config_eval:
         llm_config.update(llm_config_eval)
-        llm_config = llm_config[args.ab_model]
-    logger = AgentLogger(__name__)
+        llm_config = llm_config[ab_model]
     logger.info(f'llm_config={llm_config}')
+
     # with open() as f:
     #     yaml.dump(llm_config, f)
-    logger.info(f'Got args.ab_model={args.ab_model}')
 
     #---------------------------------------------- load llm -----------------------------------------------------
     logger.info('Start loading language model')
