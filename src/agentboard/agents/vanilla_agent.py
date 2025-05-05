@@ -80,29 +80,31 @@ class VanillaAgent(
         self.memory.append(("Observation", state))
 
     def make_prompt(self, need_goal=False, check_actions="check valid actions", check_inventory="inventory", system_message=''):
-        query = ""
-        query += self.split["instruction"][0] + self.instruction + self.split["instruction"][-1]
-
+        # query += self.split["instruction"][0] + self.instruction + self.split["instruction"][-1]
+        split = self.split
+        instruction_first, *_, instruction_last = split['instruction']   # ← note the * to swallow the middle items
+        query = f"{instruction_first}{self.instruction}{instruction_last}"
         if isinstance(self.examples, str):
             self.examples = [self.examples]
 
         if len(self.examples) > 0:
-            query += "\nHere are examples:\n" + self.split["example"][0]
+            example_first, *_, example_last = split['example']   # ← note the * to swallow the middle items
+            query += f'\nHere are examples:\n{example_first}'
             for example in self.examples:
                 query += example + "\n"
-            query += self.split["example"][-1]
+            query += example_last
         if need_goal:
-            query += self.split["goal"][0] + "You should perform actions to accomplish the goal: " + self.goal + "\n" + \
-                     self.split["goal"][-1]
+            goal_first, *_, goal_last = split['goal']   # ← note the * to swallow the middle items
+
+            query += f'{goal_first}You should perform actions to accomplish the goal: {self.goal}\n{goal_last}'
         if check_actions is not None:
             query += "You should use the following commands for help when your action cannot be understood: " + check_actions + "\n"
         if check_inventory is not None:
             query += "You should use the following commands for help when your action cannot be understood: inventory\n"
 
         history = self.memory[-self.memory_size:]
-        input_prompt = query + "\n".join([item[0] + ": " + item[1] for item in history])
-
-        input_prompt += "\nAction: "
+        string_history = '\n'.join([f'{item[0]}: {item[1]}' for item in history])
+        input_prompt = f'{query}{string_history}\nAction: '
 
         messages = [
             {"role": "system", "content": system_message},
@@ -111,8 +113,8 @@ class VanillaAgent(
         num_of_tokens = self.llm_model.num_tokens_from_messages(messages)
         while num_of_tokens > self.max_context_length - self.llm_model.max_tokens:
             history = history[1:]
-            input_prompt = query + "\n".join([item[0] + ": " + item[1] for item in history])
-            input_prompt += "\nAction: "
+            string_history = '\n'.join([f'{item[0]}: {item[1]}' for item in history])
+            input_prompt = f'{query}{string_history}\nAction: '
             # input_prompt += "\nPlease enter your action:"
             messages = [
                 {"role": "system", "content": system_message},
